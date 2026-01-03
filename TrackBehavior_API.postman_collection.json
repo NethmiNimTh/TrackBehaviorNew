@@ -1,0 +1,322 @@
+{
+	"info": {
+		"name": "TrackBehavior API",
+		"description": "Complete API collection for TrackBehavior ML-powered device tracking system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/health",
+					"host": ["{{base_url}}"],
+					"path": ["api", "health"]
+				},
+				"description": "Check server health and database connectivity"
+			}
+		},
+		{
+			"name": "2. Register User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 201) {",
+							"    var jsonData = pm.response.json();",
+							"    pm.environment.set(\"auth_token\", jsonData.token);",
+							"    pm.environment.set(\"user_email\", jsonData.user.email);",
+							"    console.log(\"Token saved: \" + jsonData.token);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"test@demo.com\",\n    \"password\": \"test123\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/register",
+					"host": ["{{base_url}}"],
+					"path": ["api", "register"]
+				},
+				"description": "Register a new user and get authentication token"
+			}
+		},
+		{
+			"name": "3. Login User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    var jsonData = pm.response.json();",
+							"    pm.environment.set(\"auth_token\", jsonData.token);",
+							"    pm.environment.set(\"device_id\", jsonData.device_id);",
+							"    console.log(\"Token saved: \" + jsonData.token);",
+							"    console.log(\"Device ID: \" + jsonData.device_id);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"test@demo.com\",\n    \"password\": \"test123\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/login",
+					"host": ["{{base_url}}"],
+					"path": ["api", "login"]
+				},
+				"description": "Login existing user"
+			}
+		},
+		{
+			"name": "4. Check Device",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{auth_token}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/check-device",
+					"host": ["{{base_url}}"],
+					"path": ["api", "check-device"]
+				},
+				"description": "Check if current device is registered"
+			}
+		},
+		{
+			"name": "5. Add Device",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 201) {",
+							"    var jsonData = pm.response.json();",
+							"    pm.environment.set(\"device_id\", jsonData.device.device_id);",
+							"    console.log(\"Device ID saved: \" + jsonData.device.device_id);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{auth_token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"device_name\": \"My Test Device\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/add-device",
+					"host": ["{{base_url}}"],
+					"path": ["api", "add-device"]
+				},
+				"description": "Register a new device for the user"
+			}
+		},
+		{
+			"name": "6. Grant Location Permission",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{auth_token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"device_id\": \"{{device_id}}\",\n    \"latitude\": 37.7749,\n    \"longitude\": -122.4194\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/grant-location-permission",
+					"host": ["{{base_url}}"],
+					"path": ["api", "grant-location-permission"]
+				},
+				"description": "Grant location permission and create university campus"
+			}
+		},
+		{
+			"name": "7. Get User Devices",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{auth_token}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/user-devices",
+					"host": ["{{base_url}}"],
+					"path": ["api", "user-devices"]
+				},
+				"description": "Get all devices for current user"
+			}
+		},
+		{
+			"name": "8. Get University Layout",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{auth_token}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/university-layout",
+					"host": ["{{base_url}}"],
+					"path": ["api", "university-layout"]
+				},
+				"description": "Get virtual university campus layout with sections"
+			}
+		},
+		{
+			"name": "9. Get All Device Locations",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{auth_token}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/all-devices-locations",
+					"host": ["{{base_url}}"],
+					"path": ["api", "all-devices-locations"]
+				},
+				"description": "Get current location of all user devices"
+			}
+		},
+		{
+			"name": "10. Get ML Status",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{auth_token}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/ml-status",
+					"host": ["{{base_url}}"],
+					"path": ["api", "ml-status"]
+				},
+				"description": "Get ML training status and model info"
+			}
+		},
+		{
+			"name": "11. Start ML Training",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{auth_token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/start-ml-training",
+					"host": ["{{base_url}}"],
+					"path": ["api", "start-ml-training"]
+				},
+				"description": "Manually start ML training (requires 2+ devices)"
+			}
+		},
+		{
+			"name": "12. Get Device Patterns",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{auth_token}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/device-patterns",
+					"host": ["{{base_url}}"],
+					"path": ["api", "device-patterns"]
+				},
+				"description": "Get behavior patterns for all user devices"
+			}
+		},
+		{
+			"name": "13. System Status",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{auth_token}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/system-status",
+					"host": ["{{base_url}}"],
+					"path": ["api", "system-status"]
+				},
+				"description": "Get overall system statistics"
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000",
+			"type": "string"
+		}
+	]
+}
